@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CHESS♟MASTER♚</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>CHESS♟MASTER♚</h1>
+    <p class="subtitle">The Ancient Game of Kings</p>
+
+    <!-- MAIN MENU -->
+    <div id="menuScreen" class="screen active">
+      <div class="menu-card">
+        <div class="menu-title">⚔ Choose Your Battle ⚔</div>
+        <button class="btn primary" onclick="showMode('friend')">
+          👥 Play with Friend<br /><small
+            style="font-size: 0.7rem; opacity: 0.7; font-family: serif"
+            >2 Players — Same Device</small
+          >
+        </button>
+        <button class="btn primary" onclick="showMode('computer')">
+          🤖 Play vs Computer<br /><small
+            style="font-size: 0.7rem; opacity: 0.7; font-family: serif"
+            >Challenge the Machine</small
+          >
+        </button>
+      </div>
+    </div>
+
+    <!-- VS COMPUTER LEVEL SELECT -->
+    <div id="levelScreen" class="screen">
+      <div class="menu-card">
+        <div class="menu-title">🤖 Select Difficulty</div>
+        <div class="level-group">
+          <button
+            class="level-btn selected"
+            id="lvl-easy"
+            onclick="selectLevel('easy')"
+          >
+            🌱<br />Easy
+          </button>
+          <button
+            class="level-btn"
+            id="lvl-medium"
+            onclick="selectLevel('medium')"
+          >
+            ⚡<br />Medium
+          </button>
+          <button class="level-btn" id="lvl-hard" onclick="selectLevel('hard')">
+            💀<br />Hard
+          </button>
+        </div>
+        <div
+          id="levelDesc"
+          style="
+            font-size: 0.85rem;
+            color: #8a7a5a;
+            margin-bottom: 16px;
+            text-align: center;
+            font-style: italic;
+          "
+        >
+          Beginner-friendly. Computer makes occasional mistakes.
+        </div>
+        <div class="menu-title" style="margin-top: 8px">Play as</div>
+        <div class="level-group">
+          <button
+            class="level-btn selected"
+            id="color-white"
+            onclick="selectColor('white')"
+          >
+            ♔ White
+          </button>
+          <button
+            class="level-btn"
+            id="color-black"
+            onclick="selectColor('black')"
+          >
+            ♚ Black
+          </button>
+        </div>
+        <button
+          class="btn primary"
+          onclick="startGame('computer')"
+          style="margin-top: 8px"
+        >
+          ⚔ Start Game
+        </button>
+        <button class="btn" onclick="showScreen('menuScreen')">← Back</button>
+      </div>
+    </div>
+
+    <!-- GAME SCREEN -->
+    <div id="gameScreen" class="screen">
+      <!-- Left panel (top player / black) -->
+      <div class="side-panel" id="leftPanel">
+        <div class="player-info">
+          <div class="player-name" id="p2Name">♚ Black</div>
+          <div class="captured-label">Captured</div>
+          <div class="captured-pieces" id="capturedByBlack"></div>
+        </div>
+        <div class="turn-indicator inactive" id="blackTurn">Waiting...</div>
+        <div class="score-display">
+          <div class="score-num" id="blackScore">0</div>
+          <div class="score-label">Score</div>
+        </div>
+        <div class="move-log" id="moveLog"></div>
+      </div>
+
+      <!-- Board -->
+      <div class="board-container">
+        <div class="board-wrapper">
+          <div id="boardWithCoords"></div>
+        </div>
+        <div class="status-bar" id="statusBar">Select a piece to begin</div>
+        <div class="game-controls">
+          <button class="btn small" onclick="undoMove()">↩ Undo</button>
+          <button class="btn small" onclick="backToMenu()">← Back</button>
+          <button class="btn small danger" onclick="showScreen('menuScreen')">
+            ✖ Menu
+          </button>
+          <button class="btn small" onclick="newGame()">↺ New</button>
+        </div>
+      </div>
+
+      <!-- Right panel (bottom player / white) -->
+      <div class="side-panel" id="rightPanel">
+        <div class="player-info">
+          <div class="player-name" id="p1Name">♔ White</div>
+          <div class="captured-label">Captured</div>
+          <div class="captured-pieces" id="capturedByWhite"></div>
+        </div>
+        <div class="turn-indicator active" id="whiteTurn">Your Turn</div>
+        <div class="score-display">
+          <div class="score-num" id="whiteScore">0</div>
+          <div class="score-label">Score</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROMOTION MODAL -->
+    <div class="modal-overlay" id="promoModal">
+      <div class="modal">
+        <div class="modal-title">👑 Promotion!</div>
+        <div class="modal-subtitle">Choose your piece</div>
+        <div class="promotion-pieces" id="promoChoices"></div>
+      </div>
+    </div>
+
+    <!-- GAME OVER MODAL -->
+    <div class="modal-overlay" id="gameOverModal">
+      <div class="modal">
+        <div class="modal-title" id="gameOverTitle">Game Over</div>
+        <div class="modal-subtitle" id="gameOverMsg"></div>
+        <button class="btn primary" onclick="newGame()">Play Again</button>
+        <button class="btn" onclick="showScreen('menuScreen')">
+          Main Menu
+        </button>
+      </div>
+    </div>
+    <script src="chess_api.js"></script>
+    <script src="script.js"></script>
+
+    <script>
+      // Debug: confirm frontend loaded
+      console.log("CHESS♟MASTER frontend loaded");
+
+      // Ensure game shows even if startGame was never called
+      document.addEventListener("DOMContentLoaded", () => {
+        try {
+          if (typeof moveNumber !== "undefined") {
+            console.log("moveNumber init:", moveNumber);
+          }
+        } catch (e) {
+          // ignore
+        }
+      });
+    </script>
+  </body>
+</html>

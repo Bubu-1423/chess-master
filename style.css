@@ -1,0 +1,559 @@
+/* ── IMPORTS ──────────────────────────────────────── */
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap");
+
+:root {
+  --bg: #0d0a07;
+  --panel: #1a1410;
+  --border: #3d2e1e;
+  --gold: #c9a84c;
+  --gold-light: #e8cc7a;
+  --cream: #f0e6d0;
+  --light-sq: #f0d9b5;
+  --dark-sq: #b58863;
+  --highlight: rgba(255, 215, 0, 0.45);
+  --valid: rgba(80, 200, 80, 0.35);
+  --check: rgba(220, 50, 50, 0.6);
+  --last-move: rgba(200, 170, 50, 0.3);
+  --text: #d4c4a0;
+  --red: #c0392b;
+  --green: #27ae60;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--bg);
+  font-family: "Crimson Pro", serif;
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 20px 10px;
+  background-image:
+    radial-gradient(
+      ellipse at 20% 20%,
+      rgba(201, 168, 76, 0.06) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at 80% 80%,
+      rgba(101, 68, 36, 0.1) 0%,
+      transparent 50%
+    );
+}
+
+h1 {
+  font-family: "Cinzel", serif;
+  font-size: clamp(1.6rem, 4vw, 2.8rem);
+  font-weight: 900;
+  color: var(--gold);
+  letter-spacing: 0.15em;
+  text-shadow: 0 0 30px rgba(201, 168, 76, 0.4);
+  margin-bottom: 6px;
+}
+
+.subtitle {
+  font-size: 0.95rem;
+  color: #8a7a5a;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  font-style: italic;
+}
+
+/* ── SCREENS ─────────────────────────────────────── */
+.screen {
+  display: none;
+  width: 100%;
+  max-width: 900px;
+}
+.screen.active {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Menu */
+.menu-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 36px 40px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow:
+    0 8px 40px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(201, 168, 76, 0.1);
+}
+
+.menu-title {
+  font-family: "Cinzel", serif;
+  font-size: 1.1rem;
+  color: var(--gold-light);
+  text-align: center;
+  margin-bottom: 24px;
+  letter-spacing: 0.1em;
+}
+
+.btn {
+  display: block;
+  width: 100%;
+  padding: 14px 20px;
+  margin-bottom: 14px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: "Cinzel", serif;
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: all 0.25s;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(201, 168, 76, 0.07),
+    transparent
+  );
+  transform: translateX(-100%);
+  transition: transform 0.4s;
+}
+
+.btn:hover::before {
+  transform: translateX(100%);
+}
+.btn:hover {
+  border-color: var(--gold);
+  color: var(--gold-light);
+  box-shadow: 0 0 16px rgba(201, 168, 76, 0.15);
+}
+.btn.primary {
+  background: linear-gradient(135deg, #3d2e1e, #2a1f10);
+  border-color: var(--gold);
+  color: var(--gold-light);
+}
+.btn.primary:hover {
+  background: linear-gradient(135deg, #5a4020, #3d2e1e);
+  box-shadow: 0 0 24px rgba(201, 168, 76, 0.25);
+}
+.btn.danger {
+  border-color: #7a2020;
+  color: #c07070;
+}
+.btn.danger:hover {
+  border-color: var(--red);
+  color: #ff8080;
+}
+.btn.small {
+  padding: 8px 16px;
+  font-size: 0.82rem;
+  width: auto;
+  margin-bottom: 0;
+}
+
+.level-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.level-btn {
+  flex: 1;
+  padding: 12px 8px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: "Cinzel", serif;
+  font-size: 0.82rem;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.level-btn:hover,
+.level-btn.selected {
+  border-color: var(--gold);
+  color: var(--gold-light);
+  background: rgba(201, 168, 76, 0.08);
+}
+
+/* ── GAME LAYOUT ─────────────────────────────────── */
+#gameScreen {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.side-panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  width: 180px;
+  min-width: 150px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.player-info {
+  text-align: center;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.player-name {
+  font-family: "Cinzel", serif;
+  font-size: 0.9rem;
+  color: var(--gold-light);
+  margin-bottom: 4px;
+}
+.player-color-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 6px;
+  vertical-align: middle;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.turn-indicator {
+  font-size: 0.8rem;
+  padding: 6px 10px;
+  border-radius: 6px;
+  text-align: center;
+  margin-bottom: 10px;
+  transition: all 0.3s;
+}
+.turn-indicator.active {
+  background: rgba(201, 168, 76, 0.12);
+  border: 1px solid var(--gold);
+  color: var(--gold-light);
+}
+.turn-indicator.inactive {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid transparent;
+  color: #5a5040;
+}
+
+.captured-pieces {
+  font-size: 1.1rem;
+  min-height: 28px;
+  line-height: 1.6;
+  word-break: break-all;
+}
+.captured-label {
+  font-size: 0.72rem;
+  color: #6a5a3a;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.score-display {
+  text-align: center;
+  margin-top: 10px;
+}
+.score-num {
+  font-family: "Cinzel", serif;
+  font-size: 1.6rem;
+  color: var(--gold);
+}
+.score-label {
+  font-size: 0.7rem;
+  color: #6a5a3a;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* Board */
+.board-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.board-wrapper {
+  position: relative;
+  padding: 8px;
+  background: linear-gradient(135deg, #2a1f10, #1a1008);
+  border: 2px solid var(--gold);
+  border-radius: 4px;
+  box-shadow:
+    0 0 0 4px #0d0a07,
+    0 0 40px rgba(201, 168, 76, 0.2),
+    inset 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.coord-row {
+  display: flex;
+  align-items: center;
+}
+.coord-col {
+  display: flex;
+}
+
+.rank-label,
+.file-label {
+  font-family: "Cinzel", serif;
+  font-size: 0.65rem;
+  color: var(--gold);
+  opacity: 0.6;
+  width: 14px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.rank-label {
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.file-label {
+  height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.file-labels {
+  display: flex;
+  padding-left: 14px;
+}
+
+#board {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  width: clamp(280px, 80vw, 520px);
+  aspect-ratio: 1;
+}
+
+.square {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.15s;
+  font-size: clamp(1.4rem, 4vw, 2.4rem);
+  user-select: none;
+}
+
+.square.light {
+  background: var(--light-sq);
+}
+.square.dark {
+  background: var(--dark-sq);
+}
+.square.selected {
+  background: var(--highlight) !important;
+}
+.square.valid-move::after {
+  content: "";
+  position: absolute;
+  width: 30%;
+  height: 30%;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+}
+.square.valid-capture::after {
+  content: "";
+  position: absolute;
+  inset: 4%;
+  border-radius: 50%;
+  border: 3px solid rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+}
+.square.last-move {
+  background: var(--last-move) !important;
+}
+.square.in-check {
+  background: var(--check) !important;
+}
+.square:hover {
+  filter: brightness(1.12);
+}
+
+.piece {
+  position: relative;
+  z-index: 2;
+  pointer-events: none;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  transition: transform 0.1s;
+  line-height: 1;
+  opacity: 1;
+  -webkit-text-stroke: 0px transparent;
+}
+
+/* Piece colors (previously looked transparent) */
+.piece.white-piece {
+  color: #ffffff;
+}
+.piece.black-piece {
+  color: #0c0c0c;
+}
+
+.square:hover .piece {
+  transform: scale(1.08);
+}
+
+/* Move log */
+.move-log {
+  margin-top: 10px;
+  font-size: 0.8rem;
+  max-height: 120px;
+  overflow-y: auto;
+  color: #8a7a5a;
+  line-height: 1.8;
+}
+.move-log::-webkit-scrollbar {
+  width: 4px;
+}
+.move-log::-webkit-scrollbar-track {
+  background: transparent;
+}
+.move-log::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 2px;
+}
+.move-num {
+  color: var(--gold);
+  opacity: 0.7;
+}
+
+/* Status bar */
+.status-bar {
+  margin-top: 12px;
+  padding: 10px 20px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: "Cinzel", serif;
+  font-size: 0.88rem;
+  color: var(--gold-light);
+  text-align: center;
+  letter-spacing: 0.08em;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  backdrop-filter: blur(4px);
+}
+.modal-overlay.open {
+  display: flex;
+}
+.modal {
+  background: var(--panel);
+  border: 1px solid var(--gold);
+  border-radius: 12px;
+  padding: 36px 40px;
+  text-align: center;
+  box-shadow: 0 0 60px rgba(201, 168, 76, 0.2);
+  max-width: 360px;
+  width: 90%;
+  animation: modalIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes modalIn {
+  from {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.modal-title {
+  font-family: "Cinzel", serif;
+  font-size: 1.6rem;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+.modal-subtitle {
+  color: var(--text);
+  margin-bottom: 24px;
+  font-size: 1.05rem;
+}
+
+/* Promotion */
+.promotion-pieces {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin: 20px 0;
+}
+.promo-btn {
+  width: 60px;
+  height: 60px;
+  background: rgba(201, 168, 76, 0.1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 2.2rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.promo-btn:hover {
+  border-color: var(--gold);
+  background: rgba(201, 168, 76, 0.2);
+  transform: scale(1.1);
+}
+
+.game-controls {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+@media (max-width: 680px) {
+  #gameScreen {
+    flex-direction: column;
+    align-items: center;
+  }
+  .side-panel {
+    width: 100%;
+    max-width: 520px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .player-info {
+    flex: 1;
+    min-width: 120px;
+  }
+  .move-log {
+    display: none;
+  }
+}
